@@ -1,8 +1,10 @@
 package com.example.bob.apka;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.*;
@@ -21,26 +23,39 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
-    public int count;
-    public List<Data> list;
-    MyAdapter adapter;
+
+    ArrayAdapter<String> ad;
     ListView lista;
+    ArrayList<String> li;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        count = 0;
-        MyBus.getInstance().register(this);
-        list = new ArrayList<Data>();
 
+        li = new ArrayList<String>();
+       // Toast.makeText(getApplicationContext(),getApplicationContext().getAssets().toString(),Toast.LENGTH_LONG).show();
         lista = (ListView) findViewById(R.id.listView);
-        adapter = new MyAdapter(this, list);
-        lista.setAdapter(adapter);
+
+
+        readFile();
+
+        ad = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, li);
+        Integer wiela = li.size();
+        Toast.makeText(getApplicationContext(),wiela.toString(),Toast.LENGTH_LONG).show();
+        lista.setAdapter(ad);
+        //ad.notifyDataSetChanged();
+
     }
 
 
@@ -62,39 +77,58 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
+        if(id == R.id.action_search) {
+            onSearchRequested();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void onClick(View view) {
 
-        EditText nr=(EditText)findViewById(R.id.editText);
-        new DataGiver().execute(nr.getText().toString());
-    }
-
-
-    @com.squareup.otto.Subscribe
-    public void onAsyncTaskResult(ReceiveEvent event) {
-        //for (int i=0;i<4;i++) list.add(data[i]);
-        //Toast.makeText(this,event.getResult(),Toast.LENGTH_LONG).show();
-        //Toast.makeText(this,event.getResult().get(0).a,Toast.LENGTH_LONG).show();
-       // ListView lista = (ListView) findViewById(R.id.listView);
-        //adapter = new MyAdapter(this, event.getResult());
-        //lista.setAdapter(adapter);
-        list.clear();
-        for(Data x :event.getResult()) {
-            list.add(x);
-        }
-        adapter.notifyDataSetChanged();
-
-    }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
-        adapter.notifyDataSetChanged();
+        ad.notifyDataSetChanged();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        readFile();
+        ad.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    private void readFile() {
+
+        String filename = "myfile";
+
+        InputStream inputStream;
+        BufferedReader reader;
+        li.clear();
+        try {
+            inputStream = new FileInputStream(this.getFilesDir().getPath() + "/" + filename);
+            InputStreamReader r = new InputStreamReader(inputStream);
+            reader = new BufferedReader(r);
+            String t;
+            while((t = reader.readLine()) != null){
+                li.add(t);
+            }
+            reader.close();
+            r.close();
+            inputStream.close();
+            // s = this.getFilesDir().list();
+        } catch (Exception e) {
+            Log.e("error",e.toString());
+        }
     }
 }
 

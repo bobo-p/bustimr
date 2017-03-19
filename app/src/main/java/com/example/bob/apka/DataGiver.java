@@ -2,6 +2,7 @@ package com.example.bob.apka;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
@@ -54,6 +55,7 @@ public class DataGiver extends AsyncTask<String,Void,List<Data> > {
         }
         catch (Exception e) {
             //return e.toString();
+           Log.e("error",e.toString());
         }
         return list;
     }

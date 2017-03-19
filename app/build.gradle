@@ -23,7 +23,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
-    compile files('lib/otto-1.3.8.jar')
+    compile files('lib/otto-1.3.6.jar')
     compile 'com.squareup:otto:1.3.6'
     compile 'org.jsoup:jsoup:1.8.1'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
