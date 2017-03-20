@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -42,8 +43,8 @@ public class ResultActivity extends FragmentActivity implements LoaderManager.Lo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_result);
 
+        setContentView(R.layout.activity_result);
         filename = "myfile";
         makeList();
         Intent intent = getIntent();
@@ -62,6 +63,7 @@ public class ResultActivity extends FragmentActivity implements LoaderManager.Lo
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_result, menu);
+
         return true;
     }
 
@@ -90,6 +92,7 @@ public class ResultActivity extends FragmentActivity implements LoaderManager.Lo
     public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor) {
         if(cursor.moveToFirst()){
             saveItem(cursor.getString(cursor.getColumnIndex(cursor.getColumnName(1))));
+            saveAndClose();
            new DataGiver().execute(cursor.getString(cursor.getColumnIndex(cursor.getColumnName(0))));
         }
     }
@@ -118,7 +121,7 @@ public class ResultActivity extends FragmentActivity implements LoaderManager.Lo
     @Override
     protected void onStop() {
         super.onStop();
-        saveAndClose();;
+
     }
 
     private void makeList() {
@@ -140,6 +143,7 @@ public class ResultActivity extends FragmentActivity implements LoaderManager.Lo
 
         if(stops.size() < 10) stops.add(s);
         else {
+            if(stops.contains(s))
             stops.remove(0);
             stops.add(s);
         }
@@ -151,10 +155,13 @@ public class ResultActivity extends FragmentActivity implements LoaderManager.Lo
             FileOutputStream out = new FileOutputStream(this.getFilesDir().getPath() + "/" + filename);
             OutputStreamWriter w = new OutputStreamWriter(out);
             BufferedWriter writer = new BufferedWriter(w);
+
+
             for(String s : stops) {
                 writer.write(s);
                 writer.newLine();
             }
+
             writer.close();
             out.close();
         } catch(Exception e) {

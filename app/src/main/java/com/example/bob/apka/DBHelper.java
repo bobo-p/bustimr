@@ -133,7 +133,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 selArgs,
                 null,
                 null,
-                FIELD_NAME + " asc ","10"
+                FIELD_NAME + " asc ","20"
         );
         return c;
     }

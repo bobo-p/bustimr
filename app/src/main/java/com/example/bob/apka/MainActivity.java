@@ -1,13 +1,16 @@
 package com.example.bob.apka;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.*;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,6 +57,25 @@ public class MainActivity extends ActionBarActivity {
         Integer wiela = li.size();
         Toast.makeText(getApplicationContext(),wiela.toString(),Toast.LENGTH_LONG).show();
         lista.setAdapter(ad);
+        final ListView myView = (ListView)findViewById(R.id.listView);
+
+        myView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String selectedFromList =(myView.getItemAtPosition(position).toString());
+                String[] parts = selectedFromList.trim().split(" ");
+                String myId="";
+                if(parts.length>=1)
+                    myId=parts[0].trim();
+                // Creating a uri to fetch country details corresponding to selected listview item
+                Uri data = Uri.withAppendedPath(StopsProvider.CONTENT_URI, String.valueOf(myId));
+                //MainActivity.res = ((TextView)view).getText().toString();
+                Intent stopInent = new Intent(getApplicationContext(),ResultActivity.class);
+                stopInent.setData(data);
+                startActivity(stopInent);
+                finish();
+            }
+        });
         //ad.notifyDataSetChanged();
 
     }
@@ -96,7 +118,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onResume() {
+    public  void onResume() {
         super.onResume();
         readFile();
         ad.notifyDataSetChanged();

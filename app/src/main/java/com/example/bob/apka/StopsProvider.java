@@ -45,7 +45,6 @@ public class StopsProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-
         Cursor c = null;
         switch(matcher.match(uri)) {
             case SUGGESTIONS :

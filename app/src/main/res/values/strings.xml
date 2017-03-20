@@ -10,6 +10,6 @@
     <string name="app_label">bus_stop</string>
     <string name="search_settings">szukanie</string>
     <string name="action_search">Szukaj</string>
-    <string name="title_activity_result">ResultActivity</string>
+    <string name="title_activity_result">Odjazdy</string>
 
 </resources>
